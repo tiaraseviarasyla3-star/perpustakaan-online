@@ -19,7 +19,7 @@
         <div class="card-body p-5">
             {{-- Header/Kop --}}
             <div class="text-center mb-5 border-bottom pb-4">
-                <h2 class="fw-bold text-primary mb-1">PERPUSTAKAAN DIGITAL</h2>
+                <h2 class="fw-bold text-primary mb-1">PERPUSTAKAAN DIGITAL MOJOKERTO</h2>
                 <p class="text-muted mb-0">Jl. Raya Literasi No.- , Kota Mojokerto</p>
                 <p class="small text-muted">Telp: (021) 888-999 | Email: library@digital.com</p>
             </div>

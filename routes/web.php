@@ -11,6 +11,7 @@ use App\Http\Controllers\LoanController;
 use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\LoanController as AdminLoanController;
+use App\Http\Controllers\Admin\ReturnController ;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,6 +115,12 @@ Route::prefix('admin')
 
          Route::get('/fines', [FineController::class, 'index'])->name('fines.index');
         Route::post('/fines/{fine}/pay', [FineController::class, 'pay'])->name('fines.pay');
+
+         Route::get('/returns', [ReturnController::class, 'index'])
+        ->name('returns.index');
+
+         Route::post('/returns/{loan}', [ReturnController::class, 'process'])
+        ->name('returns.process');
 });
 
 

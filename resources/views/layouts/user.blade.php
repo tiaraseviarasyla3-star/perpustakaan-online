@@ -81,7 +81,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark navbar-user sticky-top mb-4">
     <div class="container">
-        <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ route('user.dashboard') }}">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ route('landing') }}">
             <i class="bi bi-book-half me-2"></i> PERPUSTAKAAN
         </a>
 

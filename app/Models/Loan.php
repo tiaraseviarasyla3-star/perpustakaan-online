@@ -13,6 +13,11 @@ class Loan extends Model
         'due_date',
         'return_date',
         'status',
+        'guarantee',       // Pastikan ada
+        'book_condition',  // Pastikan ada
+        'damage_fee',      // Pastikan ada
+        'payment_method',   // Pastikan ada
+        
     ];
 
     protected $casts = [

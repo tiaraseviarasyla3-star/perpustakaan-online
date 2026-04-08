@@ -42,32 +42,36 @@ class LoanController extends Controller
 
     
 
-    public function approve(Loan $loan)
-    {
-        if ($loan->status !== 'pending') {
-            return back()->with('error', 'Peminjaman tidak valid.');
-        }
-
-        if ($loan->book->stock < 1) {
-            return back()->with('error', 'Stok buku habis.');
-        }
-
-        $loan->update([
-            'status' => 'approved',
-        ]);
-
-        $loan->book()->decrement('stock');
-
-        // 🔔 NOTIFIKASI KE USER
-        $loan->user->notify(
-            new LoanStatusNotification(
-                "Pengajuan buku '{$loan->book->title}' disetujui. 
-                Buku bisa diambil di perpustakaan."
-            )
-        );
-
-        return back()->with('success', 'Peminjaman disetujui.');
+   public function approve(Request $request, Loan $loan) // Tambahkan Request $request
+{
+    if ($loan->status !== 'pending') {
+        return back()->with('error', 'Peminjaman tidak valid.');
     }
+
+    if ($loan->book->stock < 1) {
+        return back()->with('error', 'Stok buku habis.');
+    }
+
+    // 1. UPDATE DATA (Tambahkan jaminan di sini)
+    $loan->update([
+        'status' => 'approved',
+        'guarantee' => $request->guarantee, // AMBIL DATA JAMINAN DARI FORM
+        'loan_date' => now(),
+        'due_date' => now()->addDays(7), // Atur jatuh tempo otomatis
+    ]);
+
+    $loan->book()->decrement('stock');
+
+    // 🔔 NOTIFIKASI KE USER
+    $loan->user->notify(
+        new LoanStatusNotification(
+            "Pengajuan buku '{$loan->book->title}' disetujui. 
+            Jaminan: {$request->guarantee}. Buku bisa diambil di perpustakaan."
+        )
+    );
+
+    return back()->with('success', 'Peminjaman disetujui dengan jaminan ' . $request->guarantee);
+}
 
 
     public function reject(Loan $loan)
@@ -97,25 +101,26 @@ public function return(Loan $loan)
     $today   = Carbon::today();
     $dueDate = Carbon::parse($loan->due_date)->startOfDay();
 
-    // Hitung keterlambatan (TIDAK bisa minus)
-    $daysLate = $today->greaterThan($dueDate)
-        ? $today->diffInDays($dueDate)
-        : 0;
+    // Hitung keterlambatan (tidak bisa minus)
+    $daysLate = 0;
 
-    // 🔁 Update loan (SELALU dikembalikan)
+    if ($today->gt($dueDate)) {
+        $daysLate = $dueDate->diffInDays($today);
+    }
+
+    // Update status loan
     $loan->update([
-        'status'       => 'returned',
-        'return_date'  => now(),
+        'status'      => 'returned',
+        'return_date' => now(),
     ]);
 
-    // 📦 Kembalikan stok buku
+    // Kembalikan stok buku
     $loan->book()->increment('stock');
 
-    // 💸 Jika telat → buat denda
+    // Jika telat → buat denda
     if ($daysLate > 0) {
 
-        $amountPerDay = 2000; // Rp 2.000 / hari
-        $totalAmount = $daysLate * $amountPerDay;
+        $totalAmount = $daysLate * 2000;
 
         Fine::create([
             'user_id'   => $loan->user_id,
@@ -133,6 +138,7 @@ public function return(Loan $loan)
 
     return back()->with('success', 'Buku berhasil dikembalikan.');
 }
+
 
 
         

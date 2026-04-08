@@ -140,7 +140,16 @@
                     </li>
 
                     <li class="nav-item">
-                            <a href="{{ route('admin.loans.report') }}" class="nav-link {{ request()->routeIs('admin.loans.report') ? 'active' : '' }}">
+                        <a href="{{ route('admin.returns.index') }}" class="nav-link">
+                            <i class="bi bi-arrow-return-left"></i>
+                            <span>Pengembalian</span>
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item">
+                            <a href="{{ route('admin.loans.report') }}" 
+                            class="nav-link {{ request()->routeIs('admin.loans.report') ? 'active' : '' }}">
                                 <i class="bi bi-file-earmark-bar-graph me-2"></i>
                                 <span>Laporan </span>
                             </a>

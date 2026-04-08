@@ -11,6 +11,7 @@ class Fine extends Model
         'user_id',
         'days_late',
         'amount',
+        'payment_method',
         'status',
         'paid_at'
     ];
